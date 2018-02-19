@@ -1,0 +1,12 @@
+- /dev/*
+- /run/*
+- /var/run/*
+- /proc/*
+- /srv/*
+- /sys/*
+- /tmp/*
+- *lost+found
+- /home/*
+- /mnt/*
+- /media/*
+

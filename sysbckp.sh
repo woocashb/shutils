@@ -43,7 +43,7 @@ if [ ! -r $CHK_MNT_F ];then
    exit 2;
 fi
 
-log_it /bin/tar --exclude-from="${SCRIPT_WD}/homefs_exclude.lst" -czvf ${HOMEFS_F} /home/ 
+#log_it /bin/tar --exclude-from="${SCRIPT_WD}/homefs_exclude.lst" -czvf ${HOMEFS_F} /home/ 
 
 log_it /bin/tar --exclude-from="${SCRIPT_WD}/rootfs_exclude.lst" -czvf ${ROOTFS_F} /
 

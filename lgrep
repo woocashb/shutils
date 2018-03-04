@@ -1,0 +1,36 @@
+#!/usr/bin/bash -x
+
+if [[ $# -lt 4 ]];then
+        echo "$0 przyjmuje dokładnie 4 argumenty";
+        exit 255;
+fi
+
+MONTH_DAY=$1
+HOUR=$2
+MINUTE=$3
+FILE=$4
+
+
+H_START=`echo $2 | awk -F '-' '{print $1}'`
+H_END=`echo $2 | awk -F '-' '{print $2}'`
+
+M_START=`echo $3 | awk -F '-' '{print $1}'`
+M_END=`echo $3 | awk -F '-' '{print $2}'`
+
+if (( $H_START > 24 || $H_START < 0 || $H_START > $H_END || $H_END > 24 ));then
+        echo 'Podano niepoprawną wartość argumentu';
+        exit 254;
+fi
+
+if (( $M_START > 60 || $M_START < 0 || $M_START > $M_END || $M_END > 60 ));then
+        echo 'Podano niepoprawną wartość argumentu';
+        exit 254;
+fi
+
+
+
+START=`egrep -n -i "$MONTH_DAY $H_START:" $FILE | awk -v m=$M_START -F: '$2>=m' | head -n 1 | cut -d: -f1`
+END=`egrep -n -i "$MONTH_DAY $H_END:" $FILE | awk -v m=$M_END -F: '$2<=m' | tail -n 1 | cut -d: -f1`
+
+sed -n "$START,$END p" $FILE
+

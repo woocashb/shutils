@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ ! $# -eq 1 ];then
+  echo "Usage: $0 [NETBIOS_NAME]";
+  exit 2;
+fi
+
+NETBIOS=$1
+IP_PTN='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
+
+IP_ADDR=$(nmblookup ${NETBIOS} | tail -n 1 | cut -d ' ' -f1)
+
+
+if [ $(echo $IP_ADDR | egrep -c ${IP_PTN}) -eq 0 ];then
+	echo "Brak wpisu w bazie WINS dla hosta -" ${NETBIOS};
+	exit 3;
+fi
+	
+
+
+DNS=$(dig -x ${IP_ADDR} +short)
+
+if [ -z  ${DNS} ];then
+	echo "Brak rekordu PTR dla adresu -" ${IP_ADDR};
+	exit 4;
+fi
+
+# usun koncowa kropke z nazwy
+echo "${DNS%?}"
+

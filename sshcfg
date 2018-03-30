@@ -1,0 +1,59 @@
+#!/usr/bin/bash -x
+
+tag=$2
+ip=$3
+usr=$4
+proxy=$5
+comment
+
+ENTRY_TEMPLATE=$(cat <<EOF
+Host $tag
+        HostName $ip
+        User $usr
+EOF
+
+)
+
+
+
+
+
+add(){
+if [[ ! -z $proxy ]];then
+ ENTRY_TEMPLATE=$(cat <<EOF
+ Host $tag                                                                                                                                       HostName $ip
+         User $usr
+         ProxyCommand  ssh -q -W %h:%p $proxy
+EOF
+ )
+fi
+
+
+
+}
+
+remove(){
+return
+}
+
+
+
+usage(){
+printf "
+Dodaj/usun wpisy dla hostow w ~/.ssh/config
+$0 [-a] host_tag ip_address user_name [proxy_host]
+   [-r] host_tag
+"
+exit 1;
+}
+
+while getopts "ar:" action;do
+     case $action in
+        a) add $tag $ip $usr $proxy;;
+        r) remove $tag ;;
+        \?) usage ;;
+     esac
+done
+
+usage
+

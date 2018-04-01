@@ -1,11 +1,12 @@
-#!/usr/bin/bash -x
+#!/usr/bin/bash 
 
+argc=$#
 tag=$2
 ip=$3
 usr=$4
 proxy=$5
 
-SSH_CFG=~/.ssh/configtest
+SSH_CFG=~/.ssh/config
 
 USAGE_FAIL=1
 TAG_DUPLICATE=2
@@ -25,8 +26,7 @@ if [[ ! -z $proxy ]];then
   ENTRY_TEMPLATE=$(printf "%s\n  %s\n" "$ENTRY_TEMPLATE" "$ENTRY_PROXY")
 fi
 
-printf "\n%s" "$ENTRY_TEMPLATE" >> $SSH_CFG
-
+(printf "\n%s" "$ENTRY_TEMPLATE" >> $SSH_CFG) && ssh-copy-id $tag
 exit 0;
 }
 
@@ -40,24 +40,34 @@ return 0
 
 remove(){
 cp -p $SSH_CFG ${SSH_CFG}.backup
-sed -i "/${tag}/,+3d" $SSH_CFG
+# Usun caly wpis uwzgledniajac ewentualny parametr ProxyCommand
+if [[ $(list | grep -c -i 'ProxyCommand') -ne 0 ]];then
+ sed -i "/${tag}/,+3d" $SSH_CFG
+else
+  sed -i "/${tag}/,+2d" $SSH_CFG
+fi
 
 exit 0
 }
 
 list(){
-grep -A 4 -i $tag $SSH_CFG
+grep -A 3 -i "Host $tag" $SSH_CFG
 exit 0
 }
 
 usage(){
 printf "
-Dodaj/usun wpisy dla hostow w ~/.ssh/config
-sshcfg [-a] host_tag ip_address user_name [proxy_host]
-       [-r] host_tag
+Dodaj/usun/listuj wpisy dla hostow w ~/.ssh/config
+sshcfg_mgr.sh [-a] host_tag ip_address user_name [proxy_host]
+              [-r] host_tag
+              [-l] host_tag
 "
 exit $USAGE_FAIL;
 }
+
+if [[ $argc -eq 0 ]];then
+  usage
+fi
 
 while getopts "arl:" action;do
      case $action in
@@ -68,5 +78,4 @@ while getopts "arl:" action;do
      esac
 done
 
-usage
 

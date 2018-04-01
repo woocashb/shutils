@@ -19,7 +19,7 @@ Host $tag
 )
 
 add(){
-
+chk_add_arg
 if [[ ! -z $proxy ]];then
   ENTRY_PROXY="ProxyCommand ssh -q -W %h:%p $proxy"
   ENTRY_TEMPLATE=$(printf "%s\n  %s\n" "$ENTRY_TEMPLATE" "$ENTRY_PROXY")
@@ -31,11 +31,7 @@ exit 0;
 }
 
 chk_add_arg(){
-add_argc=$1
-if [[ $add_argc -lt 3 || $add_argc -gt 4 ]];then
-  usage
-fi
-if [[ $(grep -c -i $tag $SSH_CFG) -ne 0 ]];then
+if [[ $(grep -c -i " $tag" $SSH_CFG) -ne 0 ]];then
   echo "Etykieta \"$tag\" juz istnieje."
   exit $TAG_DUPLICATE
 fi

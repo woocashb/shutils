@@ -75,9 +75,9 @@ exit 0
 usage(){
 printf "
 Dodaj/usun/listuj wpisy dla hostow w ~/.ssh/config
-sshcfg_mgr.sh [-a] host_tag ip_address user_name [proxy_host]
-              [-r] host_tag
-              [-l] host_tag
+sshcfg_mgr.sh -a host_tag ip_address user_name [proxy_host]
+              -r host_tag
+              -l host_tag
 "
 exit $USAGE_FAIL;
 }

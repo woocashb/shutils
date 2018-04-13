@@ -8,7 +8,7 @@ TRIGGER=300
 #  exit 1
 #fi
 
-OUTPUT_F=/root/bin/monitor.log
+OUTPUT_F=./monitor.log
 TIME_STAMP=$(date "+%F_%T")
 SEP=$(printf '=%.0s' {1..100})
 HEADER=$(printf "%s\n%s\n%s\n" $SEP $TIME_STAMP $SEP)

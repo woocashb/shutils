@@ -1,14 +1,17 @@
-#!/bin/bash -x
+#!/bin/bash
 
 
-PROC_NUM=$( ps -A --no-headers | wc -l)
-TRIGGER=300
+#PROC_NUM=$( ps -A --no-headers | wc -l)
+#TRIGGER=200
 
-#if [[ $PROC_NUM < $TRIGGER ]]then
-#  exit 1
-#fi
 
-OUTPUT_F=./monitor.log
+LOG_D=/var/log/scripts/
+if [[ ! -r $LOG_D ]];then
+  mkdir -p $LOG_D;
+fi
+
+OUTPUT_F=${LOG_D}/monitor.log
+
 TIME_STAMP=$(date "+%F_%T")
 SEP=$(printf '=%.0s' {1..100})
 HEADER=$(printf "%s\n%s\n%s\n" $SEP $TIME_STAMP $SEP)
@@ -17,9 +20,12 @@ PROGS=(
 "pstree" 
 "sar -r" 
 "sar -q" 
+"sar -n DEV | egrep -v 'lo|eth1'"
 "dmesg" 
 "sensors"  
 "smartctl -a /dev/sda"
+"lsof | wc -l"
+"iptables -vnL"
 )
 
 echo $HEADER >> $OUTPUT_F

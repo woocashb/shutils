@@ -68,6 +68,9 @@ if [[ ! -e ${SSH_CFG}.backup ]];then
 fi
 }
 list(){
+if [[ -z $tag ]];then
+  egrep -i "host|hostname" $SSH_CFG
+fi
 grep -A 3 -i "Host $tag" $SSH_CFG
 exit 0
 }
@@ -86,7 +89,7 @@ if [[ $argc -eq 0 ]];then
   usage
 fi
 
-while getopts "arl:" action;do
+while getopts "arl" action;do
      case $action in
         a) add $tag $ip $usr $proxy;;
         r) remove $tag ;;

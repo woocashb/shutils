@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/bash 
 
 argc=$#
 tag=$2
@@ -11,7 +11,6 @@ SSH_CFG=~/.ssh/config
 USAGE_FAIL=1
 TAG_DUPLICATE=2
 BACKUP_FAIL=3
-NO_SUCH_TAG=4
 
 ENTRY_TEMPLATE=$(printf "
 Host $tag
@@ -28,7 +27,6 @@ if [[ ! -z $proxy ]];then
 fi
 
 (printf "\n%s" "$ENTRY_TEMPLATE" >> $SSH_CFG) && ssh-copy-id $tag
-sed -i '/^$/N;/^\n$/D' $SSH_CFG
 exit 0;
 }
 
@@ -38,7 +36,7 @@ if [[ $ADD_ARGC -lt 3 ]];then
   usage
 fi
 
-if [[ $(grep -c -w -i " $tag" $SSH_CFG) -ne 0 ]];then
+if [[ $(grep -c -i " $tag" $SSH_CFG) -ne 0 ]];then
   echo "Etykieta \"$tag\" juz istnieje."
   exit $TAG_DUPLICATE
 fi
@@ -48,20 +46,13 @@ return 0
 remove(){
 cp -p $SSH_CFG ${SSH_CFG}.backup
 chk_remove_arg $#
-
 # Usun caly wpis uwzgledniajac ewentualny parametr ProxyCommand
-if [[ $(grep -ic "$tag" $SSH_CFG) -ne 1 ]];then
-  printf "Brak wpisu dla podanej etykiety \"%s\".\n" $tag
-  exit $NO_SUCH_TAG
+if [[ $(list | grep -c -i 'ProxyCommand') -ne 0 ]];then
+ sed -i "/${tag}/,+3d" $SSH_CFG
+else
+  sed -i "/${tag}/,+2d" $SSH_CFG
 fi
 
-if [[ $(list | grep -c -i 'ProxyCommand') -ne 0 ]];then
- sed -i "/^Host ${tag}$/,+3d" $SSH_CFG
-else
-  sed -i "/^Host ${tag}$/,+2d" $SSH_CFG
-fi
-# skompresuj wiele pustych lini w jedna
-sed -i '/^$/N;/^\n$/D' $SSH_CFG
 exit 0
 }
 

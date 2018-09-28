@@ -17,26 +17,6 @@ SCRIPT_WD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 RETENTION=14
 GZIP=-6
 
-function log_it()
-# Autor: Aleksandra Angielska
-# Funkcja traktuje argumenty jako komendę do wykonania i zapisuje wynik do logu
-# Ułatwi to szybka identyfikację, gdzie skrypt napotkał na problem i jest przyjazne monitorowanie
-# (jesli grep ERROR $LOG_F | wc -l zwróci 0 wiadomo, ze wszystko przebiegło pomyślnie 
-# !!! UWAGA !!! pamietaj o konieczności escape'owania ' i ", np.: log_it psql -t -d postgres -c\"select 1 \" 
-    {
-                TIME=`date +%Y-%m-%d_%H:%M:%S`
-                RETURN=$(eval $* 2>&1)
-                EXIT_CODE=$?
-        if [ $EXIT_CODE -gt 0 ]; then
-            echo $TIME ": ERROR DURING: " $* ", RETURNED: " $RETURN ", EXIT CODE: " $EXIT_CODE >> $LOG_F;
-                        if [ $EOE -eq 1 ]; then
-                                exit $EXIT_CODE;
-                        fi
-        else
-                        echo $TIME ": " $* ", RETURNED: " $RETURN >> $LOG_F;
-                fi
-    }
-
 # Sprawdzamy czy zasob zamontowal sie poprawnie
 if [ ! -r $CHK_MNT_F ];then
    echo ${TIME_STAMP} " - ERR: MOUNT FAIL" >> ${LOG_F};

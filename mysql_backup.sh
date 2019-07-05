@@ -14,7 +14,7 @@ LOG_DIR=${LOG_ROOT}/$(basename $0)
 
 # konfiguracja polaczenia
 USER=root
-PWD=lock943
+PWD=
 HOST=127.0.0.1
 
 # binarki
